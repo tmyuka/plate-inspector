@@ -46,7 +46,9 @@ struct ImageConfig {
     intensity_cutoff_low: u8,
     intensity_cutoff_high: u8,
     intensity_addition: u8,
-}
+    num_rows: u32,
+    num_columns: u32
+    }
 
 impl Default for ImageConfig {
     fn default() -> Self {
@@ -61,6 +63,8 @@ impl Default for ImageConfig {
             intensity_cutoff_low: 5,
             intensity_cutoff_high: 200,
             intensity_addition: 10,
+            num_rows: 16,
+            num_columns: 24
         }
     }
 }
@@ -69,7 +73,7 @@ impl Display for ImageConfig {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "ImageConfig(\n    image_regex: r\"{}\",\n    target_size_x: {},\n    target_size_y: {},\n    num_sites_x: {},\n    num_sites_y: {},\n    intensity_cutoff_low: {},\n    intensity_cutoff_high: {},\n    intensity_addition: {}\n)",
+            "ImageConfig(\n    image_regex: r\"{}\",\n    target_size_x: {},\n    target_size_y: {},\n    num_sites_x: {},\n    num_sites_y: {},\n    intensity_cutoff_low: {},\n    intensity_cutoff_high: {},\n    intensity_addition: {}\n   num_rows: {},\n     num_columns: {},\n)",
             self.image_regex,
             self.target_size_x,
             self.target_size_y,
@@ -77,7 +81,9 @@ impl Display for ImageConfig {
             self.num_sites_y,
             self.intensity_cutoff_low,
             self.intensity_cutoff_high,
-            self.intensity_addition
+            self.intensity_addition,
+            self.num_rows,
+            self.num_columns      
         )
     }
 }
@@ -104,16 +110,18 @@ fn write_overview_image(conf: &AppConfig) {
         intensity_cutoff_low,
         intensity_cutoff_high,
         intensity_addition,
+        num_rows,
+        num_columns
     } = conf.image_config;
     let re = Regex::new(image_regex).unwrap_or_else(|_| {
         eprintln!("{} {}", "Could not compile regex:".red(), image_regex.red());
         std::process::exit(1);
     });
-    let num_images_expected = num_sites_x * num_sites_y * 384;
+    let num_images_expected = num_sites_x * num_sites_y * 96;
 
-    // A 384-er plate has 24 columns and 16 rows.
-    let img_width_out: u32 = target_size_x * 24 * num_sites_x; // 3x3 = 9 sites
-    let img_height_out: u32 = target_size_y * 16 * num_sites_y; // 3x3 = 9 sites
+    // A 96-er plate has 12 columns and 8 rows.
+    let img_width_out: u32 = target_size_x * num_columns * num_sites_x; // 2x2 = 4 sites
+    let img_height_out: u32 = target_size_y * num_rows * num_sites_y; // 2x2 = 4 sites
 
     // Load font for image watermarking
     let font = Vec::from(include_bytes!("../assets/DejaVuSans.ttf") as &[u8]);

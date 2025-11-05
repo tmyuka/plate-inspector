@@ -8,8 +8,8 @@ ImageConfig(
     // the target sizes in pixels of each microscope image in the overview
     // The final size of the overview image is then:
     // 24 * target_size_x * num_sites_x  BY  16 * target_size_y * num_sites_y
-    target_size_x: 108,
-    target_size_y: 108,
+    target_size_x: 300,
+    target_size_y: 300,
 
     // the number of microscope sites per well in X and Y
     num_sites_x: 3,
@@ -19,5 +19,10 @@ ImageConfig(
     // set the cutoff_high to lower values to get higher contrast
     intensity_cutoff_low: 5,
     intensity_cutoff_high: 200,
-    intensity_addition: 10
+    intensity_addition: 10,
+
+    // the number of plate layout
+    num_rows: 16,
+    num_columns: 24
+
 )
